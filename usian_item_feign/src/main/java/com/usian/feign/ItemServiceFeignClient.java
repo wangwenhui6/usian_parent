@@ -65,4 +65,13 @@ public interface ItemServiceFeignClient {
      */
     @RequestMapping("/service/item/deleteItemById")
     Integer deleteItemById(@RequestParam Long itemId);
+
+    /**
+     * 规格参数查询
+     * @param page
+     * @param rows
+     * @return
+     */
+    @RequestMapping("/service/itemParam/selectItemParamAll")
+    PageResult selectItemParamAll(@RequestParam Integer page,@RequestParam Integer rows);
 }
