@@ -71,7 +71,7 @@ public class ItemController {
     @RequestMapping("/deleteItemById")
     public Result deleteItemById(Long itemId){
         Integer itemNum = itemServiceFeignClient.deleteItemById(itemId);
-        if(itemNum == 1){
+        if(itemNum == 3){
             return Result.ok();
         }
         return Result.error("删除失败");

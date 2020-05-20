@@ -5,10 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.usian.mapper.TbItemDescMapper;
 import com.usian.mapper.TbItemMapper;
 import com.usian.mapper.TbItemParamItemMapper;
-import com.usian.pojo.TbItem;
-import com.usian.pojo.TbItemDesc;
-import com.usian.pojo.TbItemExample;
-import com.usian.pojo.TbItemParamItem;
+import com.usian.pojo.*;
 import com.usian.utils.IDUtils;
 import com.usian.utils.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +85,19 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Integer deleteItemById(Long itemId) {
-        return itemMapper.deleteByPrimaryKey(itemId);
+        //商品表删除
+        int tbItemNum = itemMapper.deleteByPrimaryKey(itemId);
+        //商品描述删除
+        TbItemDescExample tbItemDescExample = new TbItemDescExample();
+        TbItemDescExample.Criteria tbItemDescExampleCriteria = tbItemDescExample.createCriteria();
+        tbItemDescExampleCriteria.andItemIdEqualTo(itemId);
+        int tbItemDescNum = tbItemDescMapper.deleteByExample(tbItemDescExample);
+        //商品规格删除
+        TbItemParamItemExample tbItemParamItemExample = new TbItemParamItemExample();
+        TbItemParamItemExample.Criteria tbItemParamItemExampleCriteria = tbItemParamItemExample.createCriteria();
+        tbItemParamItemExampleCriteria.andItemIdEqualTo(itemId);
+        int tbItemParamItemNum = tbItemParamItemMapper.deleteByExample(tbItemParamItemExample);
+        //返回
+        return tbItemNum + tbItemDescNum + tbItemParamItemNum;
     }
 }

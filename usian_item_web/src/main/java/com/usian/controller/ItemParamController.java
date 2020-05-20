@@ -31,14 +31,49 @@ public class ItemParamController {
         return Result.error("查无结果");
     }
 
+    /**
+     * 规格参数查询
+     * @param page
+     * @param rows
+     * @return
+     */
     @RequestMapping("/selectItemParamAll")
     public Result selectItemParamAll(@RequestParam(defaultValue = "1") Integer page,
                                      @RequestParam(defaultValue = "10") Integer rows){
-        System.out.println(page+"============================="+rows);
         PageResult pageResult = itemServiceFeignClient.selectItemParamAll(page,rows);
         if(pageResult.getResult().size() > 0){
             return Result.ok(pageResult);
         }
         return Result.error("查无结果");
     }
+
+    /**
+     * 商品规格模板添加
+     * @param itemCatId
+     * @param paramData
+     * @return
+     */
+    @RequestMapping("/insertItemParam")
+    public Result insertItemParam(Long itemCatId,String paramData){
+        Integer iteemParamNum = itemServiceFeignClient.insertItemParam(itemCatId,paramData);
+        if(iteemParamNum == 1){
+            return Result.ok();
+        }
+        return Result.error("添加失败");
+    }
+
+    /**
+     * 规格参数删除
+     * @param id
+     * @return
+     */
+    @RequestMapping("/deleteItemParamById")
+    public Result deleteItemParamById(Long id){
+        Integer iteemParamNum = itemServiceFeignClient.deleteItemParamById(id);
+        if(iteemParamNum == 1){
+            return Result.ok();
+        }
+        return Result.error("删除失败");
+    }
+
 }
