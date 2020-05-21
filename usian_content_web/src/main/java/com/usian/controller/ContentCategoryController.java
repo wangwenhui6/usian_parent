@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/content")
+@RequestMapping("/backend/content")
 public class ContentCategoryController {
 
     @Autowired
@@ -31,5 +31,45 @@ public class ContentCategoryController {
         return Result.error("查询失败");
     }
 
+    /**
+     * 分类内容管理 添加
+     * @param contentCategory
+     * @return
+     */
+    @RequestMapping("/insertContentCategory")
+    public Result insertContentCategory(TbContentCategory contentCategory){
+        Integer contentCategoryNum = contentServiceFeignClient.insertContentCategory(contentCategory);
+        if (contentCategoryNum == 1){
+            return Result.ok();
+        }
+        return Result.error("添加失败");
+    }
 
+    /**
+     * 分类内容管理删除
+     * @param id
+     * @return
+     */
+    @RequestMapping("/deleteContentCategoryById")
+    public Result deleteContentCategoryById(Long categoryId){
+        Integer contentCategoryNum = contentServiceFeignClient.deleteContentCategoryById(categoryId);
+        if(contentCategoryNum == 200){
+            return Result.ok();
+        }
+        return Result.error("删除失败");
+    }
+
+    /**
+     * 分类内容管理修改
+     * @param contentCategory
+     * @return
+     */
+    @RequestMapping("/updateContentCategory")
+    public Result updateContentCategory(TbContentCategory contentCategory){
+        Integer contentCategoryNum = contentServiceFeignClient.updateContentCategory(contentCategory);
+        if(contentCategoryNum == 1){
+            return Result.ok();
+        }
+        return Result.error("删除失败");
+    }
 }
