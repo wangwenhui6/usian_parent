@@ -4,11 +4,14 @@ import com.usian.feign.ItemServiceFeignClient;
 import com.usian.pojo.TbItem;
 import com.usian.utils.PageResult;
 import com.usian.utils.Result;
+import com.usian.utils.UpdateResult;
 import feign.Feign;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/backend/item")
@@ -75,5 +78,34 @@ public class ItemController {
             return Result.ok();
         }
         return Result.error("删除失败");
+    }
+
+    /**
+     * 预更新商品
+     * @return
+     */
+    @RequestMapping("/preUpdateItem")
+    public Result preUpdateItem(Long itemId){
+        Map<String, Object> map = itemServiceFeignClient.preUpdateItem(itemId);
+        if (map.get("item") != null){
+            return Result.ok(map);
+        }
+        return Result.error("预更新失败");
+    }
+
+    /**
+     * 修改商品
+     * @param tbItem
+     * @param desc
+     * @param itemParams
+     * @return
+     */
+    @RequestMapping("/updateTbItem")
+    public Result updateTbItem(TbItem tbItem,String desc,String itemParams){
+        Integer itemNum = itemServiceFeignClient.updateTbItem(tbItem,desc,itemParams);
+        if(itemNum == 3){
+            return Result.ok();
+        }
+        return Result.error("修改失败");
     }
 }

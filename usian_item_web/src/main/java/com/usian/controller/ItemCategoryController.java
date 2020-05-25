@@ -1,7 +1,6 @@
 package com.usian.controller;
 
 import com.usian.feign.ItemServiceFeignClient;
-import com.usian.pojo.TbItem;
 import com.usian.pojo.TbItemCat;
 import com.usian.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;

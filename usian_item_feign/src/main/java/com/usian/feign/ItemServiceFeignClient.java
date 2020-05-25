@@ -3,13 +3,16 @@ package com.usian.feign;
 import com.usian.pojo.TbItem;
 import com.usian.pojo.TbItemCat;
 import com.usian.pojo.TbItemParam;
+import com.usian.utils.CatResult;
 import com.usian.utils.PageResult;
+import com.usian.utils.UpdateResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 @FeignClient(value = "usian-item-service")
 public interface ItemServiceFeignClient {
@@ -90,4 +93,28 @@ public interface ItemServiceFeignClient {
      */
     @RequestMapping("/service/itemParam/deleteItemParamById")
     Integer deleteItemParamById(@RequestParam Long id);
+
+    /**
+     * 预更新商品
+     * @return
+     */
+    @RequestMapping("/service/item/preUpdateItem")
+    Map<String, Object> preUpdateItem(@RequestParam Long itemId);
+
+    /**
+     * 首页商品分类
+     * @return
+     */
+    @RequestMapping("/service/itemCategory/selectItemCategoryAll")
+    CatResult selectItemCategoryAll();
+
+    /**
+     * 修改商品
+     * @param tbItem
+     * @param desc
+     * @param itemParams
+     * @return
+     */
+    @RequestMapping("/service/item/updateTbItem")
+    Integer updateTbItem(TbItem tbItem,@RequestParam String desc,@RequestParam String itemParams);
 }
