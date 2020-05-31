@@ -91,6 +91,7 @@
                 <version>${fastDFS-client-version}</version>
             </dependency>
         </dependencies>
+
     </dependencyManagement>
     <build>
         <pluginManagement>
