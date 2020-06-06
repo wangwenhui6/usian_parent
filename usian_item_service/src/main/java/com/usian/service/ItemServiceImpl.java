@@ -10,6 +10,7 @@ import com.usian.pojo.*;
 import com.usian.utils.IDUtils;
 import com.usian.utils.PageResult;
 import com.usian.utils.UpdateResult;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +34,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Autowired
     private TbItemCatMapper tbItemCatMapper;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     @Override
     public TbItem selectItemInfo(Long itemId) {
@@ -86,6 +90,9 @@ public class ItemServiceImpl implements ItemService {
         tbItemParamItem.setCreated(date);
         tbItemParamItem.setUpdated(date);
         int tbItemParamItemNum = tbItemParamItemMapper.insertSelective(tbItemParamItem);
+
+        //添加商品发布到rabbitmq
+        amqpTemplate.convertAndSend("item_exchage","item.add",itemId);
 
         return tbItemNum + tbItemDescNum + tbItemParamItemNum;
     }
