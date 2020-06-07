@@ -174,3 +174,45 @@
             searchSourceBuilder.query(boolQueryBuilder);
             searchRequest.source(searchSourceBuilder);
             searchResponse = restHighLevelClient.search(searchRequest,RequestOptions.DEFAULT);
+2020.6.4日报
+    vue前台：
+        修改src\api\index.js：
+           baseSearchUrl:"/search_api"
+           importAll:"/frontend/searchItem/importAll" // 一键导入商品数据到索引库
+        修改src\api\index.js
+            getImportAll(){
+                return axios.post(base.baseSearchUrl + base.importAll,null,{timeout:50000});
+            }
+        修改src\pages\Product\ProductList\index.vue
+            <el-button type="primary" @click="importAll">一键导入商品</el-button>
+            importAll() {
+                this.$api.getImportAll().then(res => {
+                    if (res.data.status == 200) {
+                        this.$message({
+                        type: "success",
+                        message: "导入成功!"
+                        });
+                    } else {
+                         this.$message({
+                         type: "error",
+                         message: "导入失败!"
+                         });
+                     }
+                 });
+            }
+        修改vue.config.js
+            '/search_api': {
+                	target: 'http://127.0.0.1:8096',
+                    // target: 'http://121.42.14.194:9021',
+                    pathRewrite: {
+                        '^/search_api': ''
+                    },
+                    changeOrigin: true
+            }
+    新建usian_search_service
+        业务逻辑：
+        1、查看索引库是否存在（不存在则新建）
+        2、查询mysql中的商品信息，把商品信息添加到es中。
+    新建usian_search_feign
+    新建usian_search_web
+
