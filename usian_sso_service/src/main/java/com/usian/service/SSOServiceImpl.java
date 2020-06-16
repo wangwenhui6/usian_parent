@@ -90,7 +90,7 @@ public class SSOServiceImpl implements SSOService {
         //4、封装到map
         Map<String, Object> map = new HashMap<>();
         map.put("token",token);
-        map.put("userId",tbUser.getId());
+        map.put("userid",tbUser.getId());
         map.put("username",username);
         return map;
     }

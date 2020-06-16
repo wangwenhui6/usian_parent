@@ -42,10 +42,10 @@ public class CartController {
      * @param response 响应
      * @return
      */
-    @RequestMapping("/deletemFromCart")
+    @RequestMapping("/deleteItemFromCart")
     public Result deleteItemFromCart(Long itemId,String userId,HttpServletRequest request,HttpServletResponse response){
         try {
-            if (StringUtils.isNotBlank(userId)) {
+            if (StringUtils.isBlank(userId)) {
                 //======================未登录状态===================
                 Map<String, TbItem> cart = getCartFromCoolie(request);
                 cart.remove(itemId.toString());
@@ -54,7 +54,7 @@ public class CartController {
                 //======================登录状态=====================、
                 //删除Reids缓存数据
                 Map<String, TbItem> cart = getCartFromRedis(userId);
-                cart.remove(itemId);
+                cart.remove(itemId.toString());
                 //将新的购物车缓存到redis
                 addCartToRedis(userId,cart);
             }
@@ -77,7 +77,7 @@ public class CartController {
     @RequestMapping("/updateItemNum")
     public Result updateItemNum(String userId,Long itemId,Integer num,HttpServletRequest request,HttpServletResponse response){
         try {
-            if (StringUtils.isNotBlank(userId)){
+            if (StringUtils.isBlank(userId)){
                 //==================用户未登录===============
                 //1、从cookie中获取购物车
                 Map<String, TbItem> cart = getCartFromCoolie(request);
@@ -113,26 +113,27 @@ public class CartController {
      */
     @RequestMapping("/showCart")
     public Result showCart(String userId,HttpServletRequest request,HttpServletResponse response){
+        List<TbItem> itemList = new ArrayList<>();
         try {
-            if(StringUtils.isNotBlank(userId)){
+            if(StringUtils.isBlank(userId)){
                 //用户未登录状态
-                List<TbItem> tbItemList = new ArrayList<>();
+
+                String cartJson = CookieUtils.getCookieValue(request, CART_COOKIE_KEY, true);
                 Map<String, TbItem> cart = getCartFromCoolie(request);
                 Set<String> keys = cart.keySet();
                 for (String key :keys){
-                    tbItemList.add(cart.get(key));
+                    itemList.add(cart.get(key));
                 }
             }else {
                 //用户登录状态
-                List<TbItem> itemList = new ArrayList<>();
                 Map<String, TbItem> cart = getCartFromRedis(userId);
                 Set<String> keySet = cart.keySet();
                 for (String key :keySet) {
                     itemList.add(cart.get(key));
                 }
-                return Result.ok();
+
             }
-            return Result.ok();
+            return Result.ok(itemList);
         }catch (Exception e){
             e.printStackTrace();
             return Result.error("error");

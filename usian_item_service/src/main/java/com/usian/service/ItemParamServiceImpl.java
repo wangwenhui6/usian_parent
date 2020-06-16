@@ -43,7 +43,7 @@ public class ItemParamServiceImpl implements ItemParamService {
     private Long ITEM_INFO_EXPIRE;
 
     @Value("${SETNX_PARAM_LOCK_KEY}")
-    private Long SETNX_PARAM_LOCK_KEY;
+    private String SETNX_PARAM_LOCK_KEY;
 
     /**
      * 根据商品分类 ID 查询规格参数模板

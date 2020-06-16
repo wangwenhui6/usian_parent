@@ -16,8 +16,8 @@ public class CartServiceImpl implements CartService{
     @Autowired
     private RedisClient redisClient;
 
-    @Value("${CART_REDIS_NAME}")
-    private String CART_REDIS_NAME;
+    @Value("${CART_REDIS_KEY}")
+    private String CART_REDIS_KEY;
 
     /**
      * 根据用户id查询购物车
@@ -26,7 +26,7 @@ public class CartServiceImpl implements CartService{
      */
     @Override
     public Map<String, TbItem> selectCartByUserId(String userId) {
-        return (Map<String, TbItem>) redisClient.hget(CART_REDIS_NAME, userId);
+        return (Map<String, TbItem>) redisClient.hget(CART_REDIS_KEY, userId);
     }
 
     /**
@@ -37,7 +37,7 @@ public class CartServiceImpl implements CartService{
      */
     @Override
     public Boolean insertCart(String userId, Map<String, TbItem> cart) {
-        return redisClient.hset(CART_REDIS_NAME, userId, cart);
+        return redisClient.hset(CART_REDIS_KEY, userId, cart);
     }
 
 }
