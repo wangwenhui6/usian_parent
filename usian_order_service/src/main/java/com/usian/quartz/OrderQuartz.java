@@ -1,5 +1,9 @@
 package com.usian.quartz;
 
+import com.usian.mapper.LocalMessageMapper;
+import com.usian.mq.MQSender;
+import com.usian.pojo.LocalMessage;
+import com.usian.pojo.LocalMessageExample;
 import com.usian.pojo.TbOrder;
 import com.usian.redis.RedisClient;
 import com.usian.service.OrderService;
@@ -20,6 +24,12 @@ public class OrderQuartz implements Job {
 
     @Autowired
     private RedisClient redisClient;
+
+    @Autowired
+    private LocalMessageMapper localMessageMapper;
+
+    @Autowired
+    private MQSender mqSender;
 
     //关闭超时订单
     @Override
@@ -44,6 +54,16 @@ public class OrderQuartz implements Job {
                 //3、把超时订单中的商品库存数量加回去
                 orderService.updateTbItemByOrderId(tbOrder.getOrderId());
             }
+
+            System.out.println("检查本地消息表任务——————"+new Date());
+            LocalMessageExample localMessageExample = new LocalMessageExample();
+            LocalMessageExample.Criteria criteria = localMessageExample.createCriteria();
+            criteria.andStateEqualTo(0);
+            List<LocalMessage> localMessageList = localMessageMapper.selectByExample(localMessageExample);
+            for (LocalMessage localMessage : localMessageList) {
+                mqSender.sendMsg(localMessage);
+            }
+
             redisClient.del("SETNX_LOCK_ORDER_KEY");
         }else {
             System.out.println(
